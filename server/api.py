@@ -29,7 +29,7 @@ def receive_color():
 @app.route("/color", methods=["GET"])
 def get_color():
     if stored_color is None:
-        return jsonify({"message": "no color set yet"}), 404
+        return jsonify(Color(0, 0, 0).serialize())
     return jsonify(stored_color.serialize())
 
 
