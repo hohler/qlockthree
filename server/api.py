@@ -18,16 +18,16 @@ def receive_color():
         assert 0 <= green <= 255
         assert 0 <= blue <= 255
     except (ValueError, TypeError, AssertionError):
-        return jsonify({"error": "Ungültige RGB-Werte"}), 400
+        return jsonify({"error": "invalid rgb values"}), 400
 
     stored_color = {"red": red, "green": green, "blue": blue}
-    return jsonify({"message": "Farbe gespeichert"})
+    return jsonify({"message": "color set"})
 
 
 @app.route("/color", methods=["GET"])
 def get_color():
     if stored_color is None:
-        return jsonify({"message": "Keine Farbe gespeichert"})
+        return jsonify({"message": "no color set yet"})
     return jsonify(stored_color)
 
 
