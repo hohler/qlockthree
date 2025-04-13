@@ -21,7 +21,7 @@ def receive_color():
     except (ValueError, TypeError, AssertionError):
         return jsonify({"error": "invalid rgb values"}), 400
 
-    stored_color = {"red": red, "green": green, "blue": blue}
+    stored_color = Color(red, green, blue)
     strip.set_color_changed()
     return jsonify({"message": "color set"})
 
@@ -30,7 +30,7 @@ def receive_color():
 def get_color():
     if stored_color is None:
         return jsonify({"message": "no color set yet"}), 404
-    return jsonify(stored_color)
+    return jsonify(stored_color.serialize())
 
 
 @app.route("/color", methods=["DELETE"])
@@ -45,9 +45,9 @@ def color_generator(is_environment_bright):
     if stored_color is None:
         return None
     if is_environment_bright:
-        return Color(stored_color.red, stored_color.green, stored_color.blue)
+        return stored_color
     # return generate_dark_color()
-    return Color(stored_color.red, stored_color.green, stored_color.blue)
+    return stored_color
 
 
 def start_api(strip_instance):

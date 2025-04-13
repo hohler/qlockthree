@@ -12,6 +12,9 @@ class Color():
         self.g = g
         self.b = b
 
+    def serialize(self):
+        return {"red": self.r, "green": self.g, "blue": self.b}
+
 
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
