@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify, __version__
-from strip import Color, Strip
+
+from strip import Color
 
 app = Flask(__name__)
 
 stored_color = None
 stored_brightness = 100
 strip = None
+
 
 @app.route("/color", methods=["POST"])
 def receive_color():
@@ -55,19 +57,21 @@ def delete_color():
 def color_generator(is_environment_bright):
     if stored_color is None:
         return None
+
+    color = Color(
+        int(stored_color.r * stored_brightness / 100),
+        int(stored_color.g * stored_brightness / 100),
+        int(stored_color.b * stored_brightness / 100)
+    )
+
     if is_environment_bright:
         # with adjusted color by brightness
-        return Color(
-            int(stored_color.r * stored_brightness / 100),
-            int(stored_color.g * stored_brightness / 100),
-            int(stored_color.b * stored_brightness / 100)
-        )
-
-    return darken_color(stored_color)
+        return color
+    return darken_color(color)
 
 
 def darken_color(color):
-    darkness_factor = 6.66 * (1+(100-stored_brightness)/100)
+    darkness_factor = 6.66
     return Color(int(color.r / darkness_factor), int(color.g / darkness_factor), int(color.b / darkness_factor))
 
 
