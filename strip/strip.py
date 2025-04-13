@@ -31,6 +31,7 @@ class Strip(ABC):
     is_environment_bright = True
 
     color_generator = None
+    color_changed = None
 
     @abc.abstractmethod
     def __init__(self):
@@ -63,6 +64,9 @@ class Strip(ABC):
             if generated_color:
                 return generated_color
         return self.color_white_bright if self.is_environment_bright else self.color_white_dark
+
+    def set_color_changed(self):
+        self.color_changed = True
 
     @abc.abstractmethod
     def show(self):

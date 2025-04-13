@@ -3,7 +3,7 @@ import os
 import RPi.GPIO as GPIO
 import datetime
 import time
-import threading
+from threading import Thread
 
 from strip import WS2801, WS2812b
 from util import hour_ein, hours, minutes, dots, word_es, word_ist
@@ -62,7 +62,9 @@ if __name__ == "__main__":
 
     check_wifi(strip)
 
-    threading.Thread(target=start_api, daemon=True).start()
+    api_thread = Thread(target=start_api, args=(strip,))
+    api_thread.setDaemon(True)
+    api_thread.start()
     time.sleep(1)
 
     strip.color_generator = color_generator
@@ -75,9 +77,10 @@ if __name__ == "__main__":
         strip.is_environment_bright = is_environment_bright
 
         current_timestamp = str(datetime.datetime.now().hour) + str(datetime.datetime.now().minute)
-        if last_timestamp is None or last_timestamp != current_timestamp or is_environment_bright != was_environment_bright:
+        if last_timestamp is None or last_timestamp != current_timestamp or is_environment_bright != was_environment_bright or strip.color_changed:
             draw_words(strip)
 
         last_timestamp = current_timestamp
         was_environment_bright = is_environment_bright
+        strip.color_changed = False
         time.sleep(1)

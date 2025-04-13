@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, __version__
+from strip import Color, Strip
 
 app = Flask(__name__)
 
 stored_color = None
-
+strip = None
 
 @app.route("/color", methods=["POST"])
 def receive_color():
@@ -21,14 +22,23 @@ def receive_color():
         return jsonify({"error": "invalid rgb values"}), 400
 
     stored_color = {"red": red, "green": green, "blue": blue}
+    strip.set_color_changed()
     return jsonify({"message": "color set"})
 
 
 @app.route("/color", methods=["GET"])
 def get_color():
     if stored_color is None:
-        return jsonify({"message": "no color set yet"})
+        return jsonify({"message": "no color set yet"}), 404
     return jsonify(stored_color)
+
+
+@app.route("/color", methods=["DELETE"])
+def delete_color():
+    global stored_color
+    stored_color = None
+    strip.set_color_changed()
+    return jsonify({"message": "color unset"})
 
 
 def color_generator(is_environment_bright):
@@ -40,6 +50,8 @@ def color_generator(is_environment_bright):
     return Color(stored_color.red, stored_color.green, stored_color.blue)
 
 
-def start_api():
+def start_api(strip_instance):
+    global strip
+    strip = strip_instance
     print("Flask version: ", __version__)
-    app.run("127.0.0.1", 5000, False)
+    app.run("0.0.0.0", 5000, False)
