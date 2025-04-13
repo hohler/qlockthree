@@ -1,0 +1,9 @@
+{
+  "domain": "wortuhr_rgb",
+  "name": "Wortuhr RGB",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://example.com",
+  "requirements": [],
+  "codeowners": []
+}
