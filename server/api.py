@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, __version__
 
 app = Flask(__name__)
 
@@ -41,4 +41,5 @@ def color_generator(is_environment_bright):
 
 
 def start_api():
-    app.run(port=5000, debug=False, use_reloader=False)
+    print("Flask version: ", __version__)
+    app.run("127.0.0.1", 5000, False)
