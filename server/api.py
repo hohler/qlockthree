@@ -46,8 +46,12 @@ def color_generator(is_environment_bright):
         return None
     if is_environment_bright:
         return stored_color
-    # return generate_dark_color()
-    return stored_color
+    return darken_color(stored_color)
+
+
+def darken_color(color):
+    darkness_factor = 6.66
+    return Color(int(color.r / darkness_factor), int(color.g / darkness_factor), int(color.b / darkness_factor))
 
 
 def start_api(strip_instance):
