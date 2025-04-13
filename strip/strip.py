@@ -59,7 +59,9 @@ class Strip(ABC):
 
     def get_color(self):
         if self.color_generator:
-            return self.color_generator(self.is_environment_bright)
+            generated_color = self.color_generator(self.is_environment_bright)
+            if generated_color:
+                return generated_color
         return self.color_white_bright if self.is_environment_bright else self.color_white_dark
 
     @abc.abstractmethod

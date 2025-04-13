@@ -3,10 +3,12 @@ import os
 import RPi.GPIO as GPIO
 import datetime
 import time
+import threading
 
 from strip import WS2801, WS2812b
 from util import hour_ein, hours, minutes, dots, word_es, word_ist
-from util.party import color_generator
+# from util.party import color_generator
+from server.api import color_generator, start_api
 from util.wifi import check_wifi
 
 light_sensor_pin = 40
@@ -60,7 +62,10 @@ if __name__ == "__main__":
 
     check_wifi(strip)
 
-    # strip.color_generator = color_generator
+    threading.Thread(target=start_api, daemon=True).start()
+    time.sleep(1)
+
+    strip.color_generator = color_generator
 
     last_timestamp = None
     was_environment_bright = True
