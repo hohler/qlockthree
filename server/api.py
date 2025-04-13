@@ -1,26 +1,34 @@
-from fastapi import FastAPI
-from pydantic import BaseModel, conint
-from typing import Optional
-from strip import Color
-import uvicorn
+from flask import Flask, request, jsonify
 
-app = FastAPI()
+app = Flask(__name__)
+
+stored_color = None
 
 
-class RGBColor(BaseModel):
-    red: conint(ge=0, le=255)
-    green: conint(ge=0, le=255)
-    blue: conint(ge=0, le=255)
-
-
-stored_color: Optional[RGBColor] = None
-
-
-@app.post("/color")
-def set_color(color: RGBColor):
+@app.route("/color", methods=["POST"])
+def receive_color():
     global stored_color
-    stored_color = color
-    return {"success": True}
+    data = request.get_json()
+
+    try:
+        red = int(data.get("red"))
+        green = int(data.get("green"))
+        blue = int(data.get("blue"))
+        assert 0 <= red <= 255
+        assert 0 <= green <= 255
+        assert 0 <= blue <= 255
+    except (ValueError, TypeError, AssertionError):
+        return jsonify({"error": "Ungültige RGB-Werte"}), 400
+
+    stored_color = {"red": red, "green": green, "blue": blue}
+    return jsonify({"message": "Farbe gespeichert"})
+
+
+@app.route("/color", methods=["GET"])
+def get_color():
+    if stored_color is None:
+        return jsonify({"message": "Keine Farbe gespeichert"})
+    return jsonify(stored_color)
 
 
 def color_generator(is_environment_bright):
@@ -33,5 +41,4 @@ def color_generator(is_environment_bright):
 
 
 def start_api():
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="warning")
-
+    app.run(port=5000, debug=False, use_reloader=False)
