@@ -22,7 +22,6 @@ class WortuhrRGBLight(LightEntity):
         self._attr_supported_color_modes = {ColorMode.RGB}
         self._attr_color_mode = ColorMode.RGB
         self._attr_unique_id = "wortuhr_rgb_light"
-        self._attr_supported_features = 0
 
     @property
     def is_on(self):
